@@ -6,6 +6,7 @@ interface IOptions {
   fromCurrencyID: CurrencyModel['ID'];
   toCurrencyID: CurrencyModel['ID'];
   fromAmount: number;
+  minAmount: number;
   flow?: 'standard' | 'fixed-rate';
 }
 
@@ -14,6 +15,7 @@ export const useEstimatedExchangeAmount = (options: IOptions) => {
     fromCurrencyID,
     toCurrencyID,
     fromAmount,
+    minAmount,
     flow = 'standard'
   } = options;
   
@@ -26,11 +28,13 @@ export const useEstimatedExchangeAmount = (options: IOptions) => {
     network: toNetwork
   } = CurrencyModel.getInfoFromID(toCurrencyID);
 
+  const lessThanMinAmount = fromAmount < minAmount;
+
   const {
     data,
     isPending
   } = useFetch<
-    IEstimatedExchangeAmountResponse | null
+    IEstimatedExchangeAmountResponse
   >(`https://api.changenow.io/v2/exchange/estimated-amount`, {
     queries: {
       fromCurrency,
@@ -40,13 +44,16 @@ export const useEstimatedExchangeAmount = (options: IOptions) => {
       flow,
       fromAmount
     },
+    preventRequest: minAmount > fromAmount,
     headers: {
       'X-Changenow-Api-Key': `${import.meta.env.VITE_EXCHANGE_API_KEY}`
     }
   });
 
   return {
-    estimatedAmount: data ?  data?.toAmount : data,
+    estimatedAmount: data?.toAmount,
+    pairDisabled: data === null,
+    lessThanMinAmount,
     isPending
   };
 }

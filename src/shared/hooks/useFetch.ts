@@ -42,6 +42,8 @@ type TFetchReducer<TData> = Reducer<IFetchState<TData>, TFetchAction<TData>>
 interface IUseFetchConfig {
   queries?: Record<string, unknown>;
   headers?: IRequestConfig['headers'];
+  // For cases when we don't need to repeat request each url change
+  preventRequest?: boolean;
 }
 
 function constructURLQuery(queriesObj: Record<string, unknown> = {}) {
@@ -63,21 +65,24 @@ function stateReducer<TData> (
     case FetchAction.Success:
       return { ...state, status: FetchStatus.Success, data: action.upload, isPending: false }
     case FetchAction.Error:
-      return { ...state, status: FetchStatus.Error, error: action.upload, isPending: false}
+      return { ...state, status: FetchStatus.Error, error: action.upload, isPending: false }
     default:
       return state
   }
 }
 
 export const useFetch = <TResult>(url: string, config?: IUseFetchConfig): IFetchState<TResult> => {
-  const { queries, headers } = config || {};
+  const { queries, headers, preventRequest } = config || {};
   const [state, dispatch] = useReducer<TFetchReducer<TResult>>(
     stateReducer,
-    { status: FetchStatus.Default, isPending: true }
+    { status: FetchStatus.Default, isPending: false }
   );
   const urlResult = useMemo(() => `${url}?${constructURLQuery(queries)}`, [queries, url])
 
   useEffect(() => {
+    if (preventRequest) {
+      return;
+    }
     dispatch({ type: FetchAction.Load });
     const controller = new AbortController();
     HTTP.get<TResult>(urlResult, { signal: controller.signal, headers  })
@@ -87,9 +92,8 @@ export const useFetch = <TResult>(url: string, config?: IUseFetchConfig): IFetch
         }
       })
       .catch((error) => dispatch({ type: FetchAction.Error, upload: error }))
-
     return () => controller.abort();
-  }, [urlResult]);
+  }, [preventRequest, urlResult]);
 
  return state;
 }

@@ -16,11 +16,13 @@ import styles from './CryptoExchanger.module.scss';
 interface ICryptoExchangerProps {
   className?: string;
   onErrorMessage?: (message: string) => void;
+  autoFocus?: boolean;
 }
 
 export const CryptoExchanger: FC<ICryptoExchangerProps> = (props) => {
   const {
     className,
+    autoFocus,
     onErrorMessage = () => null,
   } = props;
   const {
@@ -32,15 +34,17 @@ export const CryptoExchanger: FC<ICryptoExchangerProps> = (props) => {
   const [fromAmount, setFromAmount] = useState(0);
   const {
     minAmount = 0,
+    pairDisabled: minPairDisabled,
     isPending: isMinExchangePending
   } = useMinExchangeUnmount({ fromCurrencyID, toCurrencyID });
   const {
     estimatedAmount = 0,
+    pairDisabled: estimatePairDisabled,
+    lessThanMinAmount,
     isPending: isAmountEstimationPending
-  } = useEstimatedExchangeAmount({ fromCurrencyID, toCurrencyID, fromAmount });
+  } = useEstimatedExchangeAmount({ fromCurrencyID, toCurrencyID, fromAmount, minAmount });
   const loaderVisible = isAmountEstimationPending || isCurrenciesPending || isMinExchangePending;
-  const pairUnavailable = estimatedAmount === null || minAmount === null;
-  const lessThanMinAmount = minAmount ? fromAmount < minAmount : false;
+  const pairUnavailable = minPairDisabled || estimatePairDisabled;
   const resultAmount = (pairUnavailable || lessThanMinAmount) ? null : estimatedAmount;
 
   useEffect(() => {
@@ -91,6 +95,7 @@ export const CryptoExchanger: FC<ICryptoExchangerProps> = (props) => {
         currencies={fromCurrencies}
         value={fromAmount}
         readOnly={loaderVisible}
+        autoFocus={autoFocus}
         onChange={(value) => setFromAmount(value)}
         onCurrencyChange={setFromCurrencyID}
       />

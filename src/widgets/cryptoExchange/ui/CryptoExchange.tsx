@@ -21,7 +21,7 @@ export const CryptoExchange: FC<ICryptoExchangeProps> = (props) => {
   return (
     <div className={cn([className, styles.currencyExchange])}>
       {/* Here should be handler for change event of feature which set it into widget state  */}
-      <CryptoExchanger onErrorMessage={setErrorMessage} />
+      <CryptoExchanger autoFocus onErrorMessage={setErrorMessage} />
       <div className={styles.exchangeAdress}>
         <Input
           label="Your Ethereum address"

@@ -27,18 +27,20 @@ export const useMinExchangeUnmount = (options: IOptions) => {
   const {
     data,
     isPending
-  } = useFetch<IMinAmountResponse | null>(`https://api.changenow.io/v2/exchange/min-amount`, {
+  } = useFetch<IMinAmountResponse>(`https://api.changenow.io/v2/exchange/min-amount`, {
     queries: {
       fromCurrency,
       toCurrency,
       fromNetwork,
       toNetwork,
       flow
-    }
+    },
+    preventRequest: !fromCurrency || !toCurrency
   });
 
   return {
-    minAmount: data ? data?.minAmount : data,
+    minAmount: data?.minAmount,
+    pairDisabled: data === null,
     isPending
   }
 }

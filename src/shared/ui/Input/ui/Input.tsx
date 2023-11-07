@@ -12,6 +12,7 @@ import styles from './Input.module.scss';
 export interface IInputProps {
   className?: string;
   value?: string | number;
+  autoFocus?: boolean;
   borderColor?: BorderColor;
   borderRadius?: IBorderRadius;
   backgroundColor?: BackgroundColor;
@@ -35,6 +36,7 @@ export const Input = forwardRef<HTMLInputElement, IInputProps>((props, ref) => {
     className,
     value,
     name,
+    autoFocus,
     variant = InputVariant.Bordered,
     label,
     placeholder,
@@ -79,12 +81,13 @@ export const Input = forwardRef<HTMLInputElement, IInputProps>((props, ref) => {
         autoComplete={autocomplete ? 'on' : 'off'}
         value={value}
         placeholder={placeholder}
-        autoFocus
+        autoFocus={autoFocus}
         onChange={onChangeWrapper}
         onFocus={onFocus}
         onBlur={onBlur}
         readOnly={readOnly}
         inputMode={inputMode}
+
       />
     </div>
   );

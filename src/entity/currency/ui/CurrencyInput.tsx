@@ -1,6 +1,6 @@
 import { FC, useCallback, useMemo, useRef, useState } from 'react';
 
-import { Input, InputVariant } from 'shared/ui/Input'
+import { IInputProps, Input, InputVariant } from 'shared/ui/Input'
 import { Icon, IconID, IconSize } from 'shared/ui/Icon';
 import { cn } from 'shared/lib/classNames';
 import { BackgroundColor, BorderColor, BorderRadius, IconColor } from 'shared/lib/const';
@@ -21,7 +21,8 @@ interface ICurrencyInputProps {
   borderRadius?: IBorderRadius;
   backgroundColor?: BackgroundColor;
   borderColor?: BorderColor;
-  readOnly?: boolean;
+  autoFocus?: IInputProps['autoFocus'];
+  readOnly?: IInputProps['readOnly'];
   onChange?: (value: number) => void;
   onCurrencyChange?: (ID: CurrencyModel['ID']) => void;
 }
@@ -32,6 +33,7 @@ export const CurrencyInput: FC<ICurrencyInputProps> = (props) => {
     value,
     currencies = [],
     currencyID,
+    autoFocus,
     readOnly,
     borderRadius = defaultBorderRadius,
     backgroundColor = BackgroundColor.Secondary,
@@ -117,6 +119,7 @@ export const CurrencyInput: FC<ICurrencyInputProps> = (props) => {
     >
       <Input
         ref={inputRef}
+        autoFocus={autoFocus}
         format={searchActive ? undefined : /^\d*(\.)?(\d{1,10})?$/}
         value={searchActive ? searchString : inputValue}
         onChange={onChangeWrapper}
