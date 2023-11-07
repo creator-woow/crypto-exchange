@@ -17,7 +17,7 @@ interface ICurrencyInputProps {
   className?: string;
   currencies: CurrencyModel[];
   currencyID: CurrencyModel['ID'];
-  value?: number;
+  value?: number | null;
   borderRadius?: IBorderRadius;
   backgroundColor?: BackgroundColor;
   borderColor?: BorderColor;
@@ -44,6 +44,7 @@ export const CurrencyInput: FC<ICurrencyInputProps> = (props) => {
   const [focused, setFocused] = useState(false);
   const componentRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const inputValue = value === null ? '—' : value;
 
   const currentCurrency = useMemo(
     () => currencies.find((currency) => currency.ID === currencyID),
@@ -116,12 +117,13 @@ export const CurrencyInput: FC<ICurrencyInputProps> = (props) => {
     >
       <Input
         ref={inputRef}
-        format={searchActive ? undefined : /^\d*(\.\d{1,10})?$/}
-        value={searchActive ? searchString : value}
+        format={searchActive ? undefined : /^\d*(\.)?(\d{1,10})?$/}
+        value={searchActive ? searchString : inputValue}
         onChange={onChangeWrapper}
         variant={InputVariant.Transparent}
         placeholder={searchActive ? "Search" : ""}
         readOnly={searchActive ? false : readOnly}
+        inputMode={searchActive ? 'text' : 'decimal'}
         onFocus={() => setFocused(true)}
         onBlur={() => setFocused(false)}
       />

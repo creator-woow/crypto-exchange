@@ -25,8 +25,9 @@ export const useMinExchangeUnmount = (options: IOptions) => {
   } = CurrencyModel.getInfoFromID(toCurrencyID);
 
   const {
-    data
-  } = useFetch<IMinAmountResponse>(`https://api.changenow.io/v2/exchange/min-amount`, {
+    data,
+    isPending
+  } = useFetch<IMinAmountResponse | null>(`https://api.changenow.io/v2/exchange/min-amount`, {
     queries: {
       fromCurrency,
       toCurrency,
@@ -36,5 +37,8 @@ export const useMinExchangeUnmount = (options: IOptions) => {
     }
   });
 
-  return data?.minAmount ?? 0;
+  return {
+    minAmount: data ? data?.minAmount : data,
+    isPending
+  }
 }

@@ -13,6 +13,12 @@
 
 .variant-filled {
 
+  &:disabled {
+    filter: grayscale(1);
+    cursor: default;
+    pointer-events: none;
+  }
+
   @media (hover: hover) {
     &:hover {
       filter: brightness(0.85);

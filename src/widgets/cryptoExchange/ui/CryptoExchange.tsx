@@ -16,10 +16,12 @@ interface ICryptoExchangeProps {
 export const CryptoExchange: FC<ICryptoExchangeProps> = (props) => {
   const { className } = props;
   const [walletAddress, setWalletAdress] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
   
   return (
     <div className={cn([className, styles.currencyExchange])}>
-      <CryptoExchanger />
+      {/* Here should be handler for change event of feature which set it into widget state  */}
+      <CryptoExchanger onErrorMessage={setErrorMessage} />
       <div className={styles.exchangeAdress}>
         <Input
           label="Your Ethereum address"
@@ -33,8 +35,14 @@ export const CryptoExchange: FC<ICryptoExchangeProps> = (props) => {
           size={ButtonSize.Medium}
           backgroundColor={BackgroundColor.Primary}
           textColor={TextColor.Secondary}
+          disabled={!!errorMessage}
         />
       </div>
+      {errorMessage && (
+        <div className={cn(['text-dangerous', styles.errorMessage])}>
+          {errorMessage}
+        </div>
+      )}
     </div>
   );
 }

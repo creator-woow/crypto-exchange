@@ -20,6 +20,7 @@ interface IButtonProps {
   textColor?: TextColor;
   icon?: IconID;
   iconSize?: IconSize;
+  disabled?: boolean;
   onClick?: (e: MouseEvent<HTMLButtonElement>) => void;
 }
 
@@ -33,6 +34,7 @@ export const Button: FC<IButtonProps> = (props) => {
     borderRadius = defaultBorderRadius,
     backgroundColor = BackgroundColor.Primary,
     iconSize = IconSize.Medium,
+    disabled,
     icon,
     onClick = () => null
   } = props;
@@ -51,6 +53,7 @@ export const Button: FC<IButtonProps> = (props) => {
         'bg-transparent': variant === ButtonVariant.Transparent
       })}
       onClick={onClick}
+      disabled={disabled}
     >
       {caption && <span className={styles.caption}>{caption}</span>}
       {icon && (

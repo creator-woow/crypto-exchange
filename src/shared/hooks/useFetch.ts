@@ -31,6 +31,8 @@ interface IErrorAction {
 
 interface IFetchState<TData> {
   status: FetchStatus;
+  isPending: boolean;
+  error?: Error;
   data?: TData;
 }
 
@@ -57,9 +59,11 @@ function stateReducer<TData> (
 ): IFetchState<TData> {
   switch(action.type) {
     case FetchAction.Load:
-      return { ...state, status: FetchStatus.Pending }
+      return { ...state, status: FetchStatus.Pending, isPending: true }
     case FetchAction.Success:
-      return { ...state, status: FetchStatus.Success, data: action.upload }
+      return { ...state, status: FetchStatus.Success, data: action.upload, isPending: false }
+    case FetchAction.Error:
+      return { ...state, status: FetchStatus.Error, error: action.upload, isPending: false}
     default:
       return state
   }
@@ -69,7 +73,7 @@ export const useFetch = <TResult>(url: string, config?: IUseFetchConfig): IFetch
   const { queries, headers } = config || {};
   const [state, dispatch] = useReducer<TFetchReducer<TResult>>(
     stateReducer,
-    { status: FetchStatus.Default }
+    { status: FetchStatus.Default, isPending: true }
   );
   const urlResult = useMemo(() => `${url}?${constructURLQuery(queries)}`, [queries, url])
 
