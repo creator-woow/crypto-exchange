@@ -1,0 +1,66 @@
+@import "./const.scss";
+
+@each $color in $backgroundColors {
+  .bg-#{$color} {
+    background-color: var(--background-#{$color}-color);
+  }
+}
+
+@each $color in $iconColors {
+  .icon-#{$color} {
+    fill: var(--icon-#{$color}-color);
+  }
+}
+
+@each $color in $textColors {
+  .text-#{$color} {
+    color: var(--text-#{$color}-color);
+  }
+}
+
+@each $color in $borderColors {
+  .border-#{$color} {
+    border-color: var(--border-#{$color}-color);
+  }
+}
+
+@each $name, $numberValue in $textWeight {
+  .text-weight-#{$name} {
+    font-weight: #{$numberValue};
+  }
+}
+
+@each $name, $radius in $borderRadius {
+  .br-#{$name} {
+    border-radius: #{$radius};
+  }
+  .br-tl-#{$name} {
+    border-top-left-radius: #{$radius};
+  }
+  .br-tr-#{$name} {
+    border-top-right-radius: #{$radius};
+  }
+  .br-bl-#{$name} {
+    border-bottom-left-radius: #{$radius};
+  }
+  .br-br-#{$name} {
+    border-bottom-right-radius: #{$radius};
+  }
+}
+
+.border {
+  border-width: 1px;
+  border-style: solid;
+
+  &:focus-visible {
+    border-color: var(--border-focus-color);
+  }
+}
+
+.border-top-none {
+  border-top: none;
+}
+
+.not-scrollable {
+  overflow: hidden;
+}

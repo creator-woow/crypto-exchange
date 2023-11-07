@@ -1,0 +1,18 @@
+.pageContent {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
+}
+
+.pageTitle {
+  margin-bottom: 16px;
+}
+
+.pageDescription {
+  font-size: 25px;
+}
+
+.exchangeWidget {
+  margin-top: 60px;
+}

@@ -1,0 +1,41 @@
+@import "./reset.scss";
+@import "./mixins.scss";
+@import "./utils.scss";
+@import "./variables.scss";
+@import "./fonts.scss";
+// Unusuall themes shouldn't be in common bundle
+@import "./themes/light.scss";
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font: var(--font-m);
+  width: 100dvw;
+  height: 100dvh;
+}
+
+#root {
+  height: 100%;
+  width: 100%;
+}
+
+.app {
+  height: 100%;
+  width: 100%;
+}
+
+.page {
+  height: 100%;
+}
+
+.container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 0 20px;
+
+  @include for-mobile() {
+    padding: 0 16px;
+  }
+}

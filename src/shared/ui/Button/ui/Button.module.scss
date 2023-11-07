@@ -1,0 +1,32 @@
+.button {
+  cursor: pointer;
+  transition: .3s ease;
+}
+
+.caption {
+  text-transform: uppercase;
+}
+
+.caption + .icon {
+  margin-left: 15px;
+}
+
+.variant-filled {
+
+  @media (hover: hover) {
+    &:hover {
+      filter: brightness(0.85);
+    }
+  }
+}
+
+.size-medium {
+  padding: 15px 59px;
+  font-size: 18px;
+}
+
+.size-small {
+  padding: 5px 10px;
+  font-size: 15px;
+}
+
