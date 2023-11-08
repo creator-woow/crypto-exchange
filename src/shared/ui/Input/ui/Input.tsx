@@ -1,4 +1,4 @@
-import { ChangeEvent, HTMLAttributes, forwardRef, useId } from 'react';
+import { ChangeEvent, HTMLAttributes, HTMLInputTypeAttribute, forwardRef, useId } from 'react';
 
 import { cn } from 'shared/lib/classNames';
 import { BackgroundColor, BorderColor, TextColor } from 'shared/lib/const';
@@ -27,6 +27,7 @@ export interface IInputProps {
   onFocus?: () => void;
   onBlur?: () => void;
   placeholder?: string;
+  type?: HTMLInputTypeAttribute;
   inputMode?: HTMLAttributes<HTMLInputElement>['inputMode'];
 }
 
@@ -46,6 +47,7 @@ export const Input = forwardRef<HTMLInputElement, IInputProps>((props, ref) => {
     backgroundColor = BackgroundColor.Secondary,
     autocomplete,
     readOnly,
+    type = 'text',
     format = /.*/,
     inputMode,
     onChange = () => null,
@@ -77,7 +79,7 @@ export const Input = forwardRef<HTMLInputElement, IInputProps>((props, ref) => {
         })}
         id={inputId}
         name={name}
-        type="text"
+        type={type}
         autoComplete={autocomplete ? 'on' : 'off'}
         value={value}
         placeholder={placeholder}
@@ -87,7 +89,6 @@ export const Input = forwardRef<HTMLInputElement, IInputProps>((props, ref) => {
         onBlur={onBlur}
         readOnly={readOnly}
         inputMode={inputMode}
-
       />
     </div>
   );

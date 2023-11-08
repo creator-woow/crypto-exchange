@@ -19,7 +19,7 @@ export const CryptoExchange: FC<ICryptoExchangeProps> = (props) => {
   const [errorMessage, setErrorMessage] = useState('');
   
   return (
-    <div className={cn([className, styles.currencyExchange])}>
+    <div className={cn([className, styles.cryptoExchange])}>
       {/* Here should be handler for change event of feature which set it into widget state  */}
       <CryptoExchanger autoFocus onErrorMessage={setErrorMessage} />
       <div className={styles.exchangeAdress}>

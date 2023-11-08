@@ -17,13 +17,13 @@ interface ICurrencyInputProps {
   className?: string;
   currencies: CurrencyModel[];
   currencyID: CurrencyModel['ID'];
-  value?: number | null;
+  value?: number | null | '';
   borderRadius?: IBorderRadius;
   backgroundColor?: BackgroundColor;
   borderColor?: BorderColor;
   autoFocus?: IInputProps['autoFocus'];
   readOnly?: IInputProps['readOnly'];
-  onChange?: (value: number) => void;
+  onChange?: IInputProps['onChange'];
   onCurrencyChange?: (ID: CurrencyModel['ID']) => void;
 }
 
@@ -70,7 +70,7 @@ export const CurrencyInput: FC<ICurrencyInputProps> = (props) => {
       setSearchString(value);
       return;
     }
-    onChange(+value);
+    onChange(value);
   }, [searchActive, onChange]);
 
   const onCurrencyChangeWrapper = useCallback((ID: CurrencyModel['ID']) => {
@@ -119,14 +119,15 @@ export const CurrencyInput: FC<ICurrencyInputProps> = (props) => {
     >
       <Input
         ref={inputRef}
+        {...(!searchActive && { format: /^\d*(\.)?(\d{1,10})?$/})}
         autoFocus={autoFocus}
-        format={searchActive ? undefined : /^\d*(\.)?(\d{1,10})?$/}
         value={searchActive ? searchString : inputValue}
-        onChange={onChangeWrapper}
         variant={InputVariant.Transparent}
-        placeholder={searchActive ? "Search" : ""}
+        placeholder={searchActive ? 'Search' : ''}
         readOnly={searchActive ? false : readOnly}
         inputMode={searchActive ? 'text' : 'decimal'}
+        type={searchActive ? 'string' : 'number'}
+        onChange={onChangeWrapper}
         onFocus={() => setFocused(true)}
         onBlur={() => setFocused(false)}
       />

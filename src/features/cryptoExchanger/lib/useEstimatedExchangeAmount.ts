@@ -29,6 +29,7 @@ export const useEstimatedExchangeAmount = (options: IOptions) => {
   } = CurrencyModel.getInfoFromID(toCurrencyID);
 
   const lessThanMinAmount = fromAmount < minAmount;
+  const noCurrencies = !(fromCurrency && toCurrency)
 
   const {
     data,
@@ -44,7 +45,7 @@ export const useEstimatedExchangeAmount = (options: IOptions) => {
       flow,
       fromAmount
     },
-    preventRequest: minAmount > fromAmount,
+    preventRequest: lessThanMinAmount || noCurrencies || !fromAmount,
     headers: {
       'X-Changenow-Api-Key': `${import.meta.env.VITE_EXCHANGE_API_KEY}`
     }

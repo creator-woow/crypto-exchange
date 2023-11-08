@@ -1,11 +1,11 @@
 import { FC, useEffect, useMemo, useState } from 'react';
 
 import { Button, ButtonSize, ButtonVariant } from 'shared/ui/Button';
-import { cn } from 'shared/lib/classNames';
 import { CurrencyInput } from 'entity/currency/ui/CurrencyInput';
 import { CurrencyModel } from 'entity/currency/model';
 import { IconID } from 'shared/ui/Icon';
 import { Loader, LoaderSize } from 'shared/ui/Loader';
+import { cn } from 'shared/lib/classNames';
 
 import { useExchangeCurrencies } from '../lib/useExchangeCurrencies';
 import { useMinExchangeUnmount } from '../lib/useMinExchangeAmount';
@@ -31,34 +31,29 @@ export const CryptoExchanger: FC<ICryptoExchangerProps> = (props) => {
   } = useExchangeCurrencies();
   const [fromCurrencyID, setFromCurrencyID] = useState<CurrencyModel['ID']>('');
   const [toCurrencyID, setToCurrencyID] = useState<CurrencyModel['ID']>('');
-  const [fromAmount, setFromAmount] = useState(0);
   const {
     minAmount = 0,
     pairDisabled: minPairDisabled,
     isPending: isMinExchangePending
-  } = useMinExchangeUnmount({ fromCurrencyID, toCurrencyID });
+  } = useMinExchangeUnmount({
+    fromCurrencyID,
+    toCurrencyID
+  });
+  const [fromAmount, setFromAmount] = useState<number | ''>(minAmount);
   const {
     estimatedAmount = 0,
     pairDisabled: estimatePairDisabled,
     lessThanMinAmount,
     isPending: isAmountEstimationPending
-  } = useEstimatedExchangeAmount({ fromCurrencyID, toCurrencyID, fromAmount, minAmount });
+  } = useEstimatedExchangeAmount({
+    fromCurrencyID,
+    toCurrencyID,
+    fromAmount: fromAmount || 0,
+    minAmount
+  });
   const loaderVisible = isAmountEstimationPending || isCurrenciesPending || isMinExchangePending;
   const pairUnavailable = minPairDisabled || estimatePairDisabled;
   const resultAmount = (pairUnavailable || lessThanMinAmount) ? null : estimatedAmount;
-
-  useEffect(() => {
-    if (pairUnavailable) {
-      onErrorMessage('This pair disabled now');
-      return;
-    }
-    if (lessThanMinAmount) {
-      onErrorMessage('Change amount less than the minimum amount for exchange');
-      return;
-    }
-    // If none of error cases were triggered just clear error message
-    onErrorMessage('');
-  }, [lessThanMinAmount, onErrorMessage, pairUnavailable]);
 
   useEffect(() => {
     if (currencies.length >= 2) {
@@ -72,6 +67,19 @@ export const CryptoExchanger: FC<ICryptoExchangerProps> = (props) => {
       setFromAmount(minAmount);
     }
   }, [minAmount]);
+
+  useEffect(() => {
+    if (pairUnavailable) {
+      onErrorMessage('This pair disabled now');
+      return;
+    }
+    if (lessThanMinAmount) {
+      onErrorMessage('Change amount less than the minimum amount for exchange');
+      return;
+    }
+    // If none of error cases were triggered just clear error message
+    onErrorMessage('');
+  }, [lessThanMinAmount, onErrorMessage, pairUnavailable]);
 
   const onReverse = () => {
     setFromCurrencyID(toCurrencyID);
@@ -96,7 +104,7 @@ export const CryptoExchanger: FC<ICryptoExchangerProps> = (props) => {
         value={fromAmount}
         readOnly={loaderVisible}
         autoFocus={autoFocus}
-        onChange={(value) => setFromAmount(value)}
+        onChange={(value) => setFromAmount(value === '' ? value : +value)}
         onCurrencyChange={setFromCurrencyID}
       />
       <Button
