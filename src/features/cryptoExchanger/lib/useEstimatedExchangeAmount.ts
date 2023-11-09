@@ -1,6 +1,8 @@
 import { CurrencyModel } from 'entity/currency/model';
-import { IEstimatedExchangeAmountResponse } from './dataTypes';
 import { useFetch } from 'shared/hooks/useFetch';
+
+import { IEstimatedExchangeAmountResponse } from './dataTypes';
+import { RequestError } from './const';
 
 interface IOptions {
   fromCurrencyID: CurrencyModel['ID'];
@@ -33,7 +35,8 @@ export const useEstimatedExchangeAmount = (options: IOptions) => {
 
   const {
     data,
-    isPending
+    isPending,
+    error
   } = useFetch<
     IEstimatedExchangeAmountResponse
   >(`https://api.changenow.io/v2/exchange/estimated-amount`, {
@@ -53,7 +56,7 @@ export const useEstimatedExchangeAmount = (options: IOptions) => {
 
   return {
     estimatedAmount: data?.toAmount,
-    pairDisabled: data === null,
+    pairDisabled: error?.id === RequestError.PairUnavailabe,
     lessThanMinAmount,
     isPending
   };

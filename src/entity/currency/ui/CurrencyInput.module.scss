@@ -1,6 +1,7 @@
 .currencyInput {
   width: 100%;
   display: flex;
+  position: relative;
 }
 
 .currencyButton {
@@ -63,4 +64,14 @@
 .searchOptionTrick {
   text-transform: uppercase;
   margin-right: 16px;
+}
+
+.nulledValue {
+  font: inherit;
+  color: inherit;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  left: 16px;
+  vertical-align: center;
 }

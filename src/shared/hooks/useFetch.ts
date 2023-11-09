@@ -1,5 +1,6 @@
 import { Reducer, useEffect, useMemo, useReducer } from 'react';
 import { HTTP, IRequestConfig } from 'shared/lib/http';
+import { HTTPError } from 'shared/lib/httpError';
 
 export enum FetchStatus {
   Pending = 'PENDING',
@@ -32,7 +33,7 @@ interface IErrorAction {
 interface IFetchState<TData> {
   status: FetchStatus;
   isPending: boolean;
-  error?: Error;
+  error: HTTPError | null;
   data?: TData;
 }
 
@@ -63,7 +64,7 @@ function stateReducer<TData> (
     case FetchAction.Load:
       return { ...state, status: FetchStatus.Pending, isPending: true }
     case FetchAction.Success:
-      return { ...state, status: FetchStatus.Success, data: action.upload, isPending: false }
+      return { ...state, status: FetchStatus.Success, data: action.upload, error: null, isPending: false }
     case FetchAction.Error:
       return { ...state, status: FetchStatus.Error, error: action.upload, isPending: false }
     default:
@@ -75,7 +76,7 @@ export const useFetch = <TResult>(url: string, config?: IUseFetchConfig): IFetch
   const { queries, headers, preventRequest } = config || {};
   const [state, dispatch] = useReducer<TFetchReducer<TResult>>(
     stateReducer,
-    { status: FetchStatus.Default, isPending: false }
+    { status: FetchStatus.Default, isPending: false, error: null }
   );
   const urlResult = useMemo(() => `${url}?${constructURLQuery(queries)}`, [queries, url])
 
@@ -86,6 +87,12 @@ export const useFetch = <TResult>(url: string, config?: IUseFetchConfig): IFetch
     dispatch({ type: FetchAction.Load });
     const controller = new AbortController();
     HTTP.get<TResult>(urlResult, { signal: controller.signal, headers  })
+      .then((data) => {
+        if (typeof data === 'object' && data !== null && 'error' in data) {
+          throw new HTTPError(data);
+        }
+        return data as TResult;
+      })
       .then((data) => {
         if (!controller.signal.aborted) {
           dispatch({ type: FetchAction.Success, upload: data })

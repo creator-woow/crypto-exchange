@@ -19,6 +19,8 @@ interface ICryptoExchangerProps {
   autoFocus?: boolean;
 }
 
+
+// todo: Feature makes extra requestes, need to find and fix logic error
 export const CryptoExchanger: FC<ICryptoExchangerProps> = (props) => {
   const {
     className,

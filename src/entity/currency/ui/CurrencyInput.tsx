@@ -46,7 +46,8 @@ export const CurrencyInput: FC<ICurrencyInputProps> = (props) => {
   const [focused, setFocused] = useState(false);
   const componentRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-  const inputValue = value === null ? '—' : value;
+  const valueNulled = value === null;
+  const inputValue = valueNulled ? '' : value;
 
   const currentCurrency = useMemo(
     () => currencies.find((currency) => currency.ID === currencyID),
@@ -117,6 +118,7 @@ export const CurrencyInput: FC<ICurrencyInputProps> = (props) => {
       ])}
       ref={componentRef}
     >
+      {valueNulled && !searchActive && <div className={styles.nulledValue}>—</div>}
       <Input
         ref={inputRef}
         {...(!searchActive && { format: /^\d*(\.)?(\d{1,10})?$/})}

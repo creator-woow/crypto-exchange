@@ -1,6 +1,9 @@
 import { CurrencyModel } from 'entity/currency/model'
 import { useFetch } from 'shared/hooks/useFetch'
+
 import { IMinAmountResponse } from './dataTypes';
+import { RequestError } from './const';
+
 
 interface IOptions {
   fromCurrencyID: CurrencyModel['ID'];
@@ -26,7 +29,8 @@ export const useMinExchangeUnmount = (options: IOptions) => {
 
   const {
     data,
-    isPending
+    isPending,
+    error
   } = useFetch<IMinAmountResponse>(`https://api.changenow.io/v2/exchange/min-amount`, {
     queries: {
       fromCurrency,
@@ -40,7 +44,7 @@ export const useMinExchangeUnmount = (options: IOptions) => {
 
   return {
     minAmount: data?.minAmount,
-    pairDisabled: data === null,
+    pairDisabled: error?.id === RequestError.PairUnavailabe,
     isPending
   }
 }
